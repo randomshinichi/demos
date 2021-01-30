@@ -18,5 +18,6 @@ sys_params = {
     'agent_lifespan': [35],
     'reproduction_food_threshold': [6], # When the agents start reproducing
     'hunger_threshold': [15], # When the agents start eating
-    'reproduction_food': [1] # How much food is needed for reproducing
+    'reproduction_food': [1], # How much food is needed for reproducing
+    'omnivore_kill_predator_success': [0.5] # How much food is needed for reproducing
 }

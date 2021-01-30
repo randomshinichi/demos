@@ -6,8 +6,8 @@ from .sys_params import sys_params
 
 sim_config = config_sim (
     {
-        'N': 12, # number of monte carlo runs
-        'T': range(50), # number of timesteps
+        'N': 5, # number of monte carlo runs
+        'T': range(300), # number of timesteps
         'M': sys_params, # simulation parameters
     }
 )

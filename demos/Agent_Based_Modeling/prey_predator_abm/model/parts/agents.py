@@ -104,11 +104,7 @@ def hunt_prey(params, substep, state_history, prev_state):
              if v['type'] == 'prey'}
     predators = {k: v for k, v in agents.items()
                  if v['type'] == 'predator'}
-    omnivores = {k: v for k, v in agents.items()
-                if v['type'] == 'omnivores'}
     hungry_predators = {k: v for k, v in predators.items()
-                        if v['food'] < hungry_threshold}
-    hungry_omnivores = {k: v for k, v in omnivores.items()
                         if v['food'] < hungry_threshold}
 
     agent_delta_food = {}
@@ -122,8 +118,39 @@ def hunt_prey(params, substep, state_history, prev_state):
             agent_delta_food[eaten_prey_label] = -1 * delta_food
         else:
             continue
-    
+    return {'agent_delta_food': agent_delta_food}
 
+
+def hunt_everybody(params, substep, state_history, prev_state):
+    """
+    Feeds the hungry omnivores with an random nearby agent.
+    """
+    agents = prev_state['agents']
+    sites = prev_state['sites']
+    hungry_threshold = params['hunger_threshold']
+    omnivores = {k: v for k, v in agents.items()
+                 if v['type'] == 'omnivore'}
+    hungry_omnivores = {k: v for k, v in omnivores.items()
+                        if v['food'] < hungry_threshold}
+
+    agent_delta_food = {}
+    for omnivore_label, omnivore_properties in hungry_omnivores.items():
+        location = omnivore_properties['location']
+        if len(agents) > 0:
+            eaten_agent_label = random.choice(list(agents.keys()))
+            # Predators/fellow omnivores are harder to kill, both may survive with a slight deficit to food
+            if agents[eaten_agent_label]['type'] in ['predator', 'omnivore'] and random.random() > params['omnivore_kill_predator_success']:
+                predator_label = eaten_agent_label
+                agent_delta_food[predator_label] = agents[predator_label]['food'] - 1
+                agent_delta_food[omnivore_label] = agents[omnivore_label]['food'] - 1
+                return {'agent_delta_food': agent_delta_food}
+            delta_food = agents[eaten_agent_label]['food']
+            agent_delta_food[omnivore_label] = delta_food
+            agent_delta_food[eaten_agent_label] = -1 * delta_food
+            # print("omnivore {} ate {} {}".format(omnivore_label, agents[eaten_agent_label]['type'], eaten_agent_label))
+            # print("{} {} should die of hunger soon".format(agents[eaten_agent_label]['type'], eaten_agent_label))
+        else:
+            continue
     return {'agent_delta_food': agent_delta_food}
 
 
@@ -139,6 +166,7 @@ def natural_death(params, substep, state_history, prev_state):
         to_remove |= (agent_properties['food'] <= 0)
         if to_remove:
             agents_to_remove.append(agent_label)
+            # print("{} {} died".format(agents[agent_label]['type'], agent_label))
     return {'remove_agents': agents_to_remove}
 
 
@@ -179,6 +207,7 @@ def site_food(params, substep, state_history, prev_state, policy_input):
 def agent_food(params, substep, state_history, prev_state, policy_input):
     updated_agents = prev_state['agents'].copy()
     for label, delta_food in policy_input['agent_delta_food'].items():
+        # import ipdb; ipdb.set_trace()
         updated_agents[label]['food'] += delta_food
     return ('agents', updated_agents)
 

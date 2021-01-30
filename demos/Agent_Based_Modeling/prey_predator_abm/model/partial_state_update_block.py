@@ -64,6 +64,15 @@ partial_state_update_block = [
     {
         # agents.py
         'policies': {
+            'hunt_prey': hunt_everybody
+        },
+        'variables': {
+            'agents': agent_food
+        }
+    },
+    {
+        # agents.py
+        'policies': {
             'natural_death': natural_death
         },
         'variables': {
