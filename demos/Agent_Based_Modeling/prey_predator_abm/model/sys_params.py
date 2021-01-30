@@ -6,6 +6,7 @@ initial_values = {
     'world_size_n_dimension': 20,
     'world_size_m_dimension':20,
     'initial_food_sites': 5,
+    'initial_omnivore_count': 3,
     'initial_predator_count':20,
     'initial_prey_count':20
 }

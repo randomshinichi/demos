@@ -17,12 +17,13 @@ def new_agent(agent_type: str, location: Tuple[int, int],
 
 def generate_agents(N: int,M: int,initial_sites: int,
                     n_predators: int,
-                    n_prey: int) -> Dict[str, dict]:
+                    n_prey: int, n_omnivore: int) -> Dict[str, dict]:
     
     available_locations = [(n, m) for n in range(N) for m in range(M)]
     initial_agents = {}
     type_queue = ['prey'] * n_prey
     type_queue += ['predator'] * n_predators
+    type_queue += ['omnivore'] * n_omnivore
     random.shuffle(type_queue)
     for agent_type in type_queue:
         location = random.choice(available_locations)
@@ -90,7 +91,7 @@ def is_neighbor(location_1: tuple, location_2: tuple) -> bool:
     else:
         return False
 
-# plotting
+# plotting                                                    
 def aggregate_runs(df,aggregate_dimension):
     '''
     Function to aggregate the monte carlo runs along a single dimension.

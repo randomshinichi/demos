@@ -104,8 +104,13 @@ def hunt_prey(params, substep, state_history, prev_state):
              if v['type'] == 'prey'}
     predators = {k: v for k, v in agents.items()
                  if v['type'] == 'predator'}
+    omnivores = {k: v for k, v in agents.items()
+                if v['type'] == 'omnivores'}
     hungry_predators = {k: v for k, v in predators.items()
                         if v['food'] < hungry_threshold}
+    hungry_omnivores = {k: v for k, v in omnivores.items()
+                        if v['food'] < hungry_threshold}
+
     agent_delta_food = {}
     for predator_label, predator_properties in hungry_predators.items():
         location = predator_properties['location']
@@ -117,6 +122,7 @@ def hunt_prey(params, substep, state_history, prev_state):
             agent_delta_food[eaten_prey_label] = -1 * delta_food
         else:
             continue
+    
 
     return {'agent_delta_food': agent_delta_food}
 
